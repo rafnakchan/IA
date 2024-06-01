@@ -25,7 +25,10 @@ conjunto_validacao, conjunto_teste = train_test_split(resto, test_size=0.5, rand
 numeroEpoca = 0
 limiteEpoca = 60
 taxaDeAprendizado = 0.6
-numeroNeuroniosEscondidos = 30
+numeroNeuroniosEscondidos = 26
+percentual_erros_teste = 1.0
+erro_quadrado_medio = 0.0
+variacao_erro_quadrado = 1.0
 
 # neuronios da camada escondida
 camada_escondida = [Neuronio(120) for _ in range(numeroNeuroniosEscondidos)]
@@ -33,9 +36,6 @@ camada_escondida = [Neuronio(120) for _ in range(numeroNeuroniosEscondidos)]
 # neuronios da camada de saida
 camada_saida = [Neuronio(numeroNeuroniosEscondidos) for _ in range(26)]
 
-percentual_erros_teste = 1.0
-erro_quadrado_medio = 1.0
-variacao_erro_quadrado = 1.0
 # passos 2 e 9 - condição de parada
 while (numeroEpoca < limiteEpoca) & (percentual_erros_teste >= 0.2) & (
         (variacao_erro_quadrado >= 0.000001) | (erro_quadrado_medio >= 0.5)):
@@ -132,7 +132,7 @@ while (numeroEpoca < limiteEpoca) & (percentual_erros_teste >= 0.2) & (
             total_erros_teste += 1
 
     percentual_erros_teste = total_erros_teste / 130
-    print("percentual de erros no teste: " + str(percentual_erros_teste))
+    print("percentual de erros no teste: " + str(percentual_erros_teste * 100))
 
 # validacao
 total_erros_validacao = 0

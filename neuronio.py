@@ -7,8 +7,8 @@ class Neuronio:
 
     def __init__(self, numero_entradas: int):
         self.numero_entradas = numero_entradas
-        self.pesos = np.random.random(numero_entradas)
-        self.bias = random.uniform(0.000001, 1.0)
+        self.pesos = np.random.uniform(-0.1, 0.1, numero_entradas)
+        self.bias = np.random.uniform(-0.1, 0.1)
 
     def print_pesos(self):
         print(self.pesos)
