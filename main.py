@@ -23,7 +23,7 @@ conjunto_validacao, conjunto_teste = train_test_split(resto, test_size=0.5, rand
 
 # passo 1 - inicializacao
 numeroEpoca = 0
-limiteEpoca = 100
+limiteEpoca = 60
 taxaDeAprendizado = 0.6
 numeroNeuroniosEscondidos = 30
 
@@ -152,10 +152,10 @@ for amostra_rotulada_validacao in conjunto_validacao:
     for i in range(0, 26):
         if i == rotulo_validacao:
             if saidas_finais_validacao[i] < 0.7:
-                erro = True
+                erro_validacao = True
         else:
             if saidas_finais_validacao[i] > 0.3:
-                erro = True
+                erro_validacao = True
     if erro_validacao:
         total_erros_validacao += 1
 
