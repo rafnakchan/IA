@@ -36,7 +36,7 @@ camada_escondida = [Neuronio(120) for _ in range(numeroNeuroniosEscondidos)]
 # neuronios da camada de saida
 camada_saida = [Neuronio(numeroNeuroniosEscondidos) for _ in range(26)]
 
-# passos 2 e 9 - condição de parada
+# passos 2 e 9 - teste de condição de parada
 while (numeroEpoca < limiteEpoca) & (percentual_erros_teste >= 0.2) & (
         (variacao_erro_quadrado >= 0.000001) | (erro_quadrado_medio >= 0.5)):
 
@@ -76,7 +76,7 @@ while (numeroEpoca < limiteEpoca) & (percentual_erros_teste >= 0.2) & (
 
             erro_total_amostra = erro_total_amostra + (np.power(erros_locais[i], 2)) / 2
 
-        # passo 7 - retro propagação
+        # passo 7 - retro propagação do erro
         correcao_pesos_camada_escondida = [[0 for x in range(121)] for y in range(numeroNeuroniosEscondidos)]
         for i in range(0, numeroNeuroniosEscondidos):
             delta = 0.0
@@ -95,7 +95,6 @@ while (numeroEpoca < limiteEpoca) & (percentual_erros_teste >= 0.2) & (
 
         erro_total_epoca += erro_total_amostra
         numero_amostra += 1
-        # print('valor instantaneo erro: ' + str(erro_total_amostra))
 
     erro_quadrado_medio_anterior = erro_quadrado_medio
     erro_quadrado_medio = erro_total_epoca / numero_amostra
@@ -106,7 +105,7 @@ while (numeroEpoca < limiteEpoca) & (percentual_erros_teste >= 0.2) & (
     print('variacao erro: ' + str(variacao_erro_quadrado))
     np.random.shuffle(conjunto_treino)
 
-    # teste
+    # passagem pelo conjunto de teste
     total_erros_teste = 0
     for amostra_rotulada_teste in conjunto_teste:
         amostra_teste = np.delete(amostra_rotulada_teste, 120, 0)
@@ -134,7 +133,7 @@ while (numeroEpoca < limiteEpoca) & (percentual_erros_teste >= 0.2) & (
     percentual_erros_teste = total_erros_teste / 130
     print("percentual de erros no teste: " + str(percentual_erros_teste * 100))
 
-# validacao
+# passagem pelo conjunto de validacao
 total_erros_validacao = 0
 for amostra_rotulada_validacao in conjunto_validacao:
     amostra_validacao = np.delete(amostra_rotulada_validacao, 120, 0)
