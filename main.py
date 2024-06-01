@@ -23,9 +23,9 @@ conjunto_validacao, conjunto_teste = train_test_split(resto, test_size=0.5, rand
 
 # passo 1 - inicializacao
 numeroEpoca = 0
-limiteEpoca = 50
-taxaDeAprendizado = 0.01
-numeroNeuroniosEscondidos = 13
+limiteEpoca = 100
+taxaDeAprendizado = 0.6
+numeroNeuroniosEscondidos = 30
 
 # neuronios da camada escondida
 camada_escondida = [Neuronio(120) for _ in range(numeroNeuroniosEscondidos)]
@@ -33,10 +33,11 @@ camada_escondida = [Neuronio(120) for _ in range(numeroNeuroniosEscondidos)]
 # neuronios da camada de saida
 camada_saida = [Neuronio(numeroNeuroniosEscondidos) for _ in range(26)]
 
-while True:
-    # passos 2 e 9 - condição de parada
-    if (numeroEpoca >= limiteEpoca):
-        break
+percentual_erros_teste = 1.0
+erro_quadrado_medio = 0.0
+variacao_erro_quadrado = 1.0
+# passos 2 e 9 - condição de parada
+while (numeroEpoca < limiteEpoca) & (percentual_erros_teste >= 0.2) :
 
     numero_amostra = 0
     erro_total_epoca = 0.0
@@ -95,35 +96,67 @@ while True:
         numero_amostra += 1
         # print('valor instantaneo erro: ' + str(erro_total_amostra))
 
+    erro_quadrado_medio_anterior = erro_quadrado_medio
     erro_quadrado_medio = erro_total_epoca / numero_amostra
+    variacao_erro_quadrado = np.abs(erro_quadrado_medio - erro_quadrado_medio_anterior)
     numeroEpoca += 1
     print('numero epoca: ' + str(numeroEpoca))
     print('erro quadrado medio: ' + str(erro_quadrado_medio))
+    print('variacao erro: ' + str(variacao_erro_quadrado))
     np.random.shuffle(conjunto_treino)
 
-    total_erros = 0
-    for amostra_rotulada in conjunto_teste:
-        amostra = np.delete(amostra_rotulada, 120, 0)
-        rotulo = amostra_rotulada[120]
+    # teste
+    total_erros_teste = 0
+    for amostra_rotulada_teste in conjunto_teste:
+        amostra_teste = np.delete(amostra_rotulada_teste, 120, 0)
+        rotulo_teste = amostra_rotulada_teste[120]
 
-        saidas_camada_escondida = [0 for _ in range(numeroNeuroniosEscondidos)]
+        saidas_camada_escondida_teste = [0 for _ in range(numeroNeuroniosEscondidos)]
         for i in range(0, numeroNeuroniosEscondidos):
-            saidas_camada_escondida[i] = camada_escondida[i].ativacao(amostra)
+            saidas_camada_escondida_teste[i] = camada_escondida[i].ativacao(amostra_teste)
 
-        saidas_finais = [0 for _ in range(26)]
+        saidas_finais_teste = [0 for _ in range(26)]
         for i in range(0, 26):
-            saidas_finais[i] = camada_saida[i].ativacao(saidas_camada_escondida)
+            saidas_finais_teste[i] = camada_saida[i].ativacao(saidas_camada_escondida_teste)
 
         erro = False
         for i in range(0, 26):
-            if (i == rotulo):
-                if (saidas_finais[i] < 0.7):
+            if i == rotulo_teste:
+                if saidas_finais_teste[i] < 0.7:
                     erro = True
             else:
-                if (saidas_finais[i] > 0.3):
+                if saidas_finais_teste[i] > 0.3:
                     erro = True
-        if (erro):
-            total_erros += 1
+        if erro:
+            total_erros_teste += 1
 
-    percentual_erros = total_erros / 130
-    print("percentual de erros: " + str(percentual_erros))
+    percentual_erros_teste = total_erros_teste / 130
+    print("percentual de erros no teste: " + str(percentual_erros_teste))
+
+# validacao
+total_erros_validacao = 0
+for amostra_rotulada_validacao in conjunto_validacao:
+    amostra_validacao = np.delete(amostra_rotulada_validacao, 120, 0)
+    rotulo_validacao = amostra_rotulada_validacao[120]
+
+    saidas_camada_escondida_validacao = [0 for _ in range(numeroNeuroniosEscondidos)]
+    for i in range(0, numeroNeuroniosEscondidos):
+        saidas_camada_escondida_validacao[i] = camada_escondida[i].ativacao(amostra_validacao)
+
+    saidas_finais_validacao = [0 for _ in range(26)]
+    for i in range(0, 26):
+        saidas_finais_validacao[i] = camada_saida[i].ativacao(saidas_camada_escondida_validacao)
+
+    erro_validacao = False
+    for i in range(0, 26):
+        if i == rotulo_validacao:
+            if saidas_finais_validacao[i] < 0.7:
+                erro = True
+        else:
+            if saidas_finais_validacao[i] > 0.3:
+                erro = True
+    if erro_validacao:
+        total_erros_validacao += 1
+
+percentual_erros_validacao = total_erros_validacao / 130
+print("percentual de erros na validacao: " + str(percentual_erros_validacao))
