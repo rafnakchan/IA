@@ -6,9 +6,7 @@ def sigmoide(x):
     if (x <= -709):
         #overflow, checar
         return 1.216780750623423e-308
-    resultado = 1 / (1 + np.exp(-x))
-
-    return resultado
+    return 1 / (1 + np.exp(-x))
 
 
 # derivada da funcao sigmoide

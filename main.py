@@ -14,9 +14,9 @@ np.set_printoptions(threshold=np.inf)
 # remodelando os dados que ficaram em 1 dimensao para uma matriz
 conjunto = entrada_dados.monta_conjunto_dados('X.txt')
 
-conjunto_treino, resto = train_test_split(conjunto, train_size=0.7, random_state=42)
+conjunto_treino, resto = train_test_split(conjunto, train_size=1066, random_state=42, shuffle=False)
 
-conjunto_validacao, conjunto_teste = train_test_split(resto, test_size=0.5, random_state=42)
+conjunto_validacao, conjunto_teste = train_test_split(resto, test_size=0.5, random_state=42, shuffle=False)
 
 # definicao da base da arquitetura da mlp
 ####################################################################
@@ -24,7 +24,7 @@ conjunto_validacao, conjunto_teste = train_test_split(resto, test_size=0.5, rand
 # passo 1 - inicializacao
 numeroEpoca = 0
 limiteEpoca = 50
-taxaDeAprendizado = 0.5
+taxaDeAprendizado = 0.01
 numeroNeuroniosEscondidos = 13
 
 # neuronios da camada escondida
@@ -91,14 +91,39 @@ while True:
         for i in range(0, numeroNeuroniosEscondidos):
             camada_escondida[i].atualizar_pesos(correcao_pesos_camada_escondida[i])
 
-        erro_total_epoca = erro_total_epoca + erro_total_amostra
+        erro_total_epoca += erro_total_amostra
         numero_amostra += 1
-        print('valor instantaneo erro: ' + str(erro_total_amostra))
+        # print('valor instantaneo erro: ' + str(erro_total_amostra))
 
     erro_quadrado_medio = erro_total_epoca / numero_amostra
     numeroEpoca += 1
-    print('erro quadrado medio: ' + str(erro_quadrado_medio))
     print('numero epoca: ' + str(numeroEpoca))
+    print('erro quadrado medio: ' + str(erro_quadrado_medio))
+    np.random.shuffle(conjunto_treino)
 
-camada_escondida[0].print_pesos()
-camada_saida[0].print_pesos()
+    total_erros = 0
+    for amostra_rotulada in conjunto_teste:
+        amostra = np.delete(amostra_rotulada, 120, 0)
+        rotulo = amostra_rotulada[120]
+
+        saidas_camada_escondida = [0 for _ in range(numeroNeuroniosEscondidos)]
+        for i in range(0, numeroNeuroniosEscondidos):
+            saidas_camada_escondida[i] = camada_escondida[i].ativacao(amostra)
+
+        saidas_finais = [0 for _ in range(26)]
+        for i in range(0, 26):
+            saidas_finais[i] = camada_saida[i].ativacao(saidas_camada_escondida)
+
+        erro = False
+        for i in range(0, 26):
+            if (i == rotulo):
+                if (saidas_finais[i] < 0.7):
+                    erro = True
+            else:
+                if (saidas_finais[i] > 0.3):
+                    erro = True
+        if (erro):
+            total_erros += 1
+
+    percentual_erros = total_erros / 130
+    print("percentual de erros: " + str(percentual_erros))
