@@ -34,10 +34,11 @@ camada_escondida = [Neuronio(120) for _ in range(numeroNeuroniosEscondidos)]
 camada_saida = [Neuronio(numeroNeuroniosEscondidos) for _ in range(26)]
 
 percentual_erros_teste = 1.0
-erro_quadrado_medio = 0.0
+erro_quadrado_medio = 1.0
 variacao_erro_quadrado = 1.0
 # passos 2 e 9 - condição de parada
-while (numeroEpoca < limiteEpoca) & (percentual_erros_teste >= 0.2) :
+while (numeroEpoca < limiteEpoca) & (percentual_erros_teste >= 0.2) & (
+        (variacao_erro_quadrado >= 0.000001) | (erro_quadrado_medio >= 0.5)):
 
     numero_amostra = 0
     erro_total_epoca = 0.0
