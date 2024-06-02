@@ -24,9 +24,9 @@ conjunto_teste, conjunto_validacao = train_test_split(resto, test_size=0.5, rand
 
 # passo 1 - inicializacao
 numero_epoca = 0
-numero_maximo_epocas = 500
+numero_maximo_epocas = 300
 taxaDeAprendizado = 0.5
-numeroNeuroniosEscondidos = 50
+numeroNeuroniosEscondidos = 130
 erro_quadrado_validacao = [0.0 for _ in range(numero_maximo_epocas)]
 percentual_erros_validacao = [0.0 for _ in range(numero_maximo_epocas)]
 erro_quadrado_medio = [0.0 for _ in range(numero_maximo_epocas)]
@@ -89,18 +89,20 @@ while True:
         # passo 7 - retro propagação do erro
         correcao_pesos_camada_escondida = [[0 for x in range(121)] for y in range(numeroNeuroniosEscondidos)]
         for i in range(0, numeroNeuroniosEscondidos):
-            delta = 0.0
+            delta_in = 0.0
             for j in range(0, 26):
                 # lista de pesos da camada de saida
                 pesos = camada_saida[j].pesos
                 # multiplica o "deltinha" da camada de saida pelo peso correspondente a saida do neurônio
                 # soma tudo em um novo "deltinha" para o neuronio da camada escondida
-                delta = delta + (gradiente_local[j] * pesos[i])
+                delta_in = delta_in + (gradiente_local[j] * pesos[i])
             # calculo da correcao de pesos das entradas da camada escondida
+            entrada_neuronio_escondido = camada_escondida[i].somatoria_entradas(amostra)
+            termo_correcao_erro = delta_in * funcao_ativacao.derivada_sigmoide(entrada_neuronio_escondido)
             for j in range(0, 120):
-                correcao_pesos_camada_escondida[i][j] = taxaDeAprendizado * delta * amostra[j]
+                correcao_pesos_camada_escondida[i][j] = taxaDeAprendizado * termo_correcao_erro * amostra[j]
             # correcao do bias
-            correcao_pesos_camada_escondida[i][120] = taxaDeAprendizado * delta
+            correcao_pesos_camada_escondida[i][120] = taxaDeAprendizado * termo_correcao_erro
 
         erro_total_epoca += erro_total_amostra
 
