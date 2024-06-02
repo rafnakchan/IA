@@ -22,13 +22,13 @@ conjunto_validacao, conjunto_teste = train_test_split(resto, test_size=0.5, rand
 ####################################################################
 
 # passo 1 - inicializacao
-numeroEpoca = 0
-limiteEpoca = 60
+numero_epoca = 0
+numero_maximo_epocas = 100
 taxaDeAprendizado = 0.6
 numeroNeuroniosEscondidos = 26
-percentual_erros_teste = 1.0
-erro_quadrado_medio = 0.0
-variacao_erro_quadrado = 1.0
+percentual_erros_teste = [0.0 for _ in range(numero_maximo_epocas)]
+erro_quadrado_medio = [0.0 for _ in range(numero_maximo_epocas)]
+variacao_erro_quadrado = [0.0 for _ in range(numero_maximo_epocas)]
 
 # neuronios da camada escondida
 camada_escondida = [Neuronio(120) for _ in range(numeroNeuroniosEscondidos)]
@@ -36,10 +36,10 @@ camada_escondida = [Neuronio(120) for _ in range(numeroNeuroniosEscondidos)]
 # neuronios da camada de saida
 camada_saida = [Neuronio(numeroNeuroniosEscondidos) for _ in range(26)]
 
-# passos 2 e 9 - teste de condição de parada
-while (numeroEpoca < limiteEpoca) & (percentual_erros_teste >= 0.2) & (
-        (variacao_erro_quadrado >= 0.000001) | (erro_quadrado_medio >= 0.5)):
+# passo 2 - executa mais uma epoca
+while True:
 
+    # passagem pelo conjunto de treinamento
     numero_amostra = 0
     erro_total_epoca = 0.0
     for amostra_rotulada in conjunto_treino:
@@ -96,15 +96,6 @@ while (numeroEpoca < limiteEpoca) & (percentual_erros_teste >= 0.2) & (
         erro_total_epoca += erro_total_amostra
         numero_amostra += 1
 
-    erro_quadrado_medio_anterior = erro_quadrado_medio
-    erro_quadrado_medio = erro_total_epoca / numero_amostra
-    variacao_erro_quadrado = np.abs(erro_quadrado_medio - erro_quadrado_medio_anterior)
-    numeroEpoca += 1
-    print('numero epoca: ' + str(numeroEpoca))
-    print('erro quadrado medio: ' + str(erro_quadrado_medio))
-    print('variacao erro: ' + str(variacao_erro_quadrado))
-    np.random.shuffle(conjunto_treino)
-
     # passagem pelo conjunto de teste
     total_erros_teste = 0
     for amostra_rotulada_teste in conjunto_teste:
@@ -122,16 +113,36 @@ while (numeroEpoca < limiteEpoca) & (percentual_erros_teste >= 0.2) & (
         erro = False
         for i in range(0, 26):
             if i == rotulo_teste:
-                if saidas_finais_teste[i] < 0.7:
+                if saidas_finais_teste[i] < 0.9:
                     erro = True
             else:
-                if saidas_finais_teste[i] > 0.3:
+                if saidas_finais_teste[i] > 0.1:
                     erro = True
         if erro:
             total_erros_teste += 1
 
-    percentual_erros_teste = total_erros_teste / 130
-    print("percentual de erros no teste: " + str(percentual_erros_teste * 100))
+    erro_quadrado_medio[numero_epoca] = erro_total_epoca / numero_amostra
+    percentual_erros_teste[numero_epoca] = total_erros_teste / 130
+    try:
+        variacao_erro_quadrado = np.abs(erro_quadrado_medio[numero_epoca] - erro_quadrado_medio[numero_epoca - 1])
+    except:
+        variacao_erro_quadrado = erro_quadrado_medio[numero_epoca]
+
+    print('********************************************************************')
+    print('numero epoca: ' + str(numero_epoca + 1))
+    print('erro quadrado medio: ' + str(erro_quadrado_medio[numero_epoca]))
+    print('variacao erro quadrado: ' + str(variacao_erro_quadrado))
+    print('percentual de erros no teste: ' + str(percentual_erros_teste[numero_epoca] * 100))
+
+    # passo 9 - condicao de parada
+    limite_epocas = numero_epoca >= numero_maximo_epocas
+    baixo_erro_teste = percentual_erros_teste[numero_epoca] < 0.2
+    baixo_erro_quadrado = erro_quadrado_medio[numero_epoca] < 0.01
+    if limite_epocas | baixo_erro_teste | baixo_erro_quadrado:
+        break
+
+    numero_epoca += 1
+    np.random.shuffle(conjunto_treino)
 
 # passagem pelo conjunto de validacao
 total_erros_validacao = 0
@@ -150,13 +161,15 @@ for amostra_rotulada_validacao in conjunto_validacao:
     erro_validacao = False
     for i in range(0, 26):
         if i == rotulo_validacao:
-            if saidas_finais_validacao[i] < 0.7:
+            if saidas_finais_validacao[i] < 0.9:
                 erro_validacao = True
         else:
-            if saidas_finais_validacao[i] > 0.3:
+            if saidas_finais_validacao[i] > 0.1:
                 erro_validacao = True
     if erro_validacao:
         total_erros_validacao += 1
 
 percentual_erros_validacao = total_erros_validacao / 130
-print("percentual de erros na validacao: " + str(percentual_erros_validacao))
+print('********************************************************************')
+print('erros na validacao: ' + str(total_erros_validacao))
+print('percentual de erros na validacao: ' + str(percentual_erros_validacao * 100))
