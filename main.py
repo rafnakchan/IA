@@ -166,6 +166,10 @@ while True:
 
 # passagem pelo conjunto de teste
 total_erros_teste = 0
+verdadeiro_positivo = 0
+falso_positivo = 0
+verdadeiro_negativo = 0
+falso_negativo = 0
 for amostra_rotulada_teste in conjunto_teste:
     amostra_teste = np.delete(amostra_rotulada_teste, 120, 0)
     rotulo_teste = amostra_rotulada_teste[120]
@@ -182,10 +186,16 @@ for amostra_rotulada_teste in conjunto_teste:
     for i in range(0, 26):
         if i == rotulo_teste:
             if saidas_finais_teste[i] < 0.9:
+                falso_negativo += 1
                 erro_teste = True
+            else:
+                verdadeiro_positivo += 1
         else:
             if saidas_finais_teste[i] > 0.1:
+                falso_positivo += 1
                 erro_teste = True
+            else:
+                verdadeiro_negativo += 1
     if erro_teste:
         total_erros_teste += 1
 
