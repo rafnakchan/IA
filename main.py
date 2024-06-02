@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.model_selection import train_test_split
 
@@ -26,6 +27,7 @@ numero_epoca = 0
 numero_maximo_epocas = 100
 taxaDeAprendizado = 0.6
 numeroNeuroniosEscondidos = 26
+erro_quadrado_teste = [0.0 for _ in range(numero_maximo_epocas)]
 percentual_erros_teste = [0.0 for _ in range(numero_maximo_epocas)]
 erro_quadrado_medio = [0.0 for _ in range(numero_maximo_epocas)]
 variacao_erro_quadrado = [0.0 for _ in range(numero_maximo_epocas)]
@@ -113,11 +115,16 @@ while True:
         erro = False
         for i in range(0, 26):
             if i == rotulo_teste:
+                erros_local_teste = 1 - saidas_finais_teste[i]
                 if saidas_finais_teste[i] < 0.9:
                     erro = True
             else:
+                erros_local_teste = 0 - saidas_finais_teste[i]
                 if saidas_finais_teste[i] > 0.1:
                     erro = True
+            erro_quadrado_teste[numero_epoca] += ((np.power(erros_local_teste, 2)) / 2)
+        erro_quadrado_teste[numero_epoca] = erro_quadrado_teste[numero_epoca] / 120
+
         if erro:
             total_erros_teste += 1
 
@@ -132,16 +139,17 @@ while True:
     print('numero epoca: ' + str(numero_epoca + 1))
     print('erro quadrado medio: ' + str(erro_quadrado_medio[numero_epoca]))
     print('variacao erro quadrado: ' + str(variacao_erro_quadrado))
+    print('erro quadrado no teste: ' + str(erro_quadrado_teste[numero_epoca]))
     print('percentual de erros no teste: ' + str(percentual_erros_teste[numero_epoca] * 100))
 
     # passo 9 - condicao de parada
-    limite_epocas = numero_epoca >= numero_maximo_epocas
     baixo_erro_teste = percentual_erros_teste[numero_epoca] < 0.2
     baixo_erro_quadrado = erro_quadrado_medio[numero_epoca] < 0.01
+    numero_epoca += 1
+    limite_epocas = numero_epoca >= numero_maximo_epocas
     if limite_epocas | baixo_erro_teste | baixo_erro_quadrado:
         break
 
-    numero_epoca += 1
     np.random.shuffle(conjunto_treino)
 
 # passagem pelo conjunto de validacao
@@ -173,3 +181,21 @@ percentual_erros_validacao = total_erros_validacao / 130
 print('********************************************************************')
 print('erros na validacao: ' + str(total_erros_validacao))
 print('percentual de erros na validacao: ' + str(percentual_erros_validacao * 100))
+
+plt.plot(erro_quadrado_medio, marker='o', color='r', linewidth='1.0')
+plt.xlabel("Epoca")
+plt.ylabel("Erro Quadrado Medio")
+plt.grid()
+plt.show()
+
+plt.plot(erro_quadrado_teste, marker='o', color='g')
+plt.xlabel("Epoca")
+plt.ylabel("Erro Quadrado Teste")
+plt.grid()
+plt.show()
+
+plt.plot(percentual_erros_teste, marker='o', color='b')
+plt.xlabel("Epoca")
+plt.ylabel("Percentual Erros Validacao")
+plt.grid()
+plt.show()
