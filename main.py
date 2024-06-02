@@ -24,9 +24,9 @@ conjunto_teste, conjunto_validacao = train_test_split(resto, test_size=0.5, rand
 
 # passo 1 - inicializacao
 numero_epoca = 0
-numero_maximo_epocas = 100
-taxaDeAprendizado = 0.6
-numeroNeuroniosEscondidos = 26
+numero_maximo_epocas = 500
+taxaDeAprendizado = 0.5
+numeroNeuroniosEscondidos = 50
 erro_quadrado_validacao = [0.0 for _ in range(numero_maximo_epocas)]
 percentual_erros_validacao = [0.0 for _ in range(numero_maximo_epocas)]
 erro_quadrado_medio = [0.0 for _ in range(numero_maximo_epocas)]
@@ -102,13 +102,14 @@ while True:
             # correcao do bias
             correcao_pesos_camada_escondida[i][120] = taxaDeAprendizado * delta
 
+        erro_total_epoca += erro_total_amostra
+
         # passo 8 - atualizacao pesos
         for i in range(0, 26):
             camada_saida[i].atualizar_pesos(correcao_pesos_camada_saida[i])
         for i in range(0, numeroNeuroniosEscondidos):
             camada_escondida[i].atualizar_pesos(correcao_pesos_camada_escondida[i])
 
-        erro_total_epoca += erro_total_amostra
         numero_amostra += 1
 
     # passagem pelo conjunto de validacao
@@ -203,6 +204,10 @@ percentual_erros_teste = total_erros_teste / 130
 print('********************************************************************')
 print('erros na Teste: ' + str(total_erros_teste))
 print('percentual de erros na Teste: ' + str(percentual_erros_teste * 100))
+print('verdadeiro_positivo: ' + str(verdadeiro_positivo))
+print('falso_positivo: ' + str(falso_positivo))
+print('verdadeiro_negativo: ' + str(verdadeiro_negativo))
+print('falso_negativo: ' + str(falso_negativo))
 
 plt.plot(erro_quadrado_medio, marker='o', color='r', linewidth='1.0')
 plt.plot(percentual_erros_validacao, marker='o', color='b', linewidth='1.0')
