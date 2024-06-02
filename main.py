@@ -123,7 +123,6 @@ while True:
                 if saidas_finais_teste[i] > 0.1:
                     erro = True
             erro_quadrado_teste[numero_epoca] += ((np.power(erros_local_teste, 2)) / 2)
-        erro_quadrado_teste[numero_epoca] = erro_quadrado_teste[numero_epoca] / 120
 
         if erro:
             total_erros_teste += 1
@@ -183,6 +182,12 @@ print('erros na validacao: ' + str(total_erros_validacao))
 print('percentual de erros na validacao: ' + str(percentual_erros_validacao * 100))
 
 plt.plot(erro_quadrado_medio, marker='o', color='r', linewidth='1.0')
+plt.plot(percentual_erros_teste, marker='o', color='b', linewidth='1.0')
+plt.xlabel("Epoca")
+plt.grid()
+plt.show()
+
+plt.plot(erro_quadrado_medio, marker='o', color='r', linewidth='1.0')
 plt.xlabel("Epoca")
 plt.ylabel("Erro Quadrado Medio")
 plt.grid()
@@ -190,7 +195,7 @@ plt.show()
 
 plt.plot(erro_quadrado_teste, marker='o', color='g', linewidth='1.0')
 plt.xlabel("Epoca")
-plt.ylabel("Erro Quadrado Teste")
+plt.ylabel("Erro Quadrado Validacao")
 plt.grid()
 plt.show()
 
