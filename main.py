@@ -26,11 +26,12 @@ conjunto_teste, conjunto_validacao = train_test_split(resto, test_size=0.5, rand
 numero_epoca = 0
 numero_maximo_epocas = 300
 taxaDeAprendizado = 0.5
-numeroNeuroniosEscondidos = 130
+numeroNeuroniosEscondidos = 26
 erro_quadrado_validacao = [0.0 for _ in range(numero_maximo_epocas)]
 percentual_erros_validacao = [0.0 for _ in range(numero_maximo_epocas)]
 erro_quadrado_medio = [0.0 for _ in range(numero_maximo_epocas)]
 variacao_erro_quadrado = [0.0 for _ in range(numero_maximo_epocas)]
+baixo_erro_quadrado_seguidos = 0
 
 # neuronios da camada escondida
 camada_escondida = [Neuronio(120) for _ in range(numeroNeuroniosEscondidos)]
@@ -159,10 +160,16 @@ while True:
 
     # passo 9 - condicao de parada
     baixo_erro_validacao = percentual_erros_validacao[numero_epoca] < 0.2
-    baixo_erro_quadrado = erro_quadrado_medio[numero_epoca] < 0.01
+    baixo_erro_quadrado = erro_quadrado_medio[numero_epoca] < 0.001
+    if baixo_erro_quadrado:
+        baixo_erro_quadrado_seguidos += 1
+    else:
+        baixo_erro_quadrado_seguidos = 0
+
+    baixo_erro_quadrado_constante = baixo_erro_quadrado_seguidos > 10
     numero_epoca += 1
     limite_epocas = numero_epoca >= numero_maximo_epocas
-    if limite_epocas | baixo_erro_validacao | baixo_erro_quadrado:
+    if limite_epocas | baixo_erro_validacao | baixo_erro_quadrado_constante:
         break
 
     np.random.shuffle(conjunto_treino)
