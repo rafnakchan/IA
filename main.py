@@ -6,6 +6,16 @@ import entrada_dados
 import funcao_ativacao
 from neuronio import Neuronio
 
+####################################################################
+# Membros do grupo
+# Christian Kobashikawa 10374473
+# Gustavo Santana       13751110
+# Helena Furtado        13835173
+# Henrique Venchiarutti 12543694
+# Mateus da Silva       13672731
+# Rafael Nakamura       10723986
+####################################################################
+
 # importacao dos dados
 ####################################################################
 
