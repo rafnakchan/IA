@@ -194,6 +194,7 @@ for amostra_rotulada_teste in conjunto_teste:
     amostra_teste = np.delete(amostra_rotulada_teste, 120, 0)
     rotulo_teste = amostra_rotulada_teste[120]
 
+    # feedforward
     saidas_camada_escondida_teste = [0 for _ in range(numeroNeuroniosEscondidos)]
     for i in range(0, numeroNeuroniosEscondidos):
         saidas_camada_escondida_teste[i] = camada_escondida[i].ativacao(amostra_teste)
@@ -202,6 +203,7 @@ for amostra_rotulada_teste in conjunto_teste:
     for i in range(0, 26):
         saidas_finais_teste[i] = camada_saida[i].ativacao(saidas_camada_escondida_teste)
 
+    # verificacao de erro
     erro_teste = False
     for i in range(0, 26):
         if i == rotulo_teste:
