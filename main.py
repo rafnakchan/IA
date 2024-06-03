@@ -26,7 +26,7 @@ conjunto_teste, conjunto_validacao = train_test_split(resto, test_size=0.5, rand
 numero_epoca = 0
 numero_maximo_epocas = 300
 taxaDeAprendizado = 0.5
-numeroNeuroniosEscondidos = 26
+numeroNeuroniosEscondidos = 52
 erro_quadrado_validacao = [0.0 for _ in range(numero_maximo_epocas)]
 percentual_erros_validacao = [0.0 for _ in range(numero_maximo_epocas)]
 erro_quadrado_medio = [0.0 for _ in range(numero_maximo_epocas)]
