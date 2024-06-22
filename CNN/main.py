@@ -1,4 +1,3 @@
-import numpy as np
 from keras.api.models import Sequential
 from keras.api.layers import Dense, Conv2D, Flatten
 import entrada_dados
