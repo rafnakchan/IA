@@ -11,15 +11,9 @@ import entrada_dados
 # configuração para imprimir o array completo
 np.set_printoptions(threshold=np.inf)
 
-# remodelando os dados que ficaram em 1 dimensao para uma matriz
-conjunto = entrada_dados.monta_conjunto_dados('./Arquivos/X.txt')
-rotulo = entrada_dados.monta_rotulo('./Arquivos/Y_letra.txt')
-
-conjunto_treino, conjunto_resto = train_test_split(conjunto, train_size=1066, random_state=42, shuffle=False)
-rotulo_treino, rotulo_resto = train_test_split(rotulo, train_size=1066, random_state=42, shuffle=False)
-
-conjunto_teste, conjunto_validacao = train_test_split(conjunto_resto, test_size=0.5, random_state=42, shuffle=False)
-rotulo_teste, rotulo_validacao = train_test_split(rotulo_resto, test_size=0.5, random_state=42, shuffle=False)
+# montagem dos dados de entrada
+conjunto_treino, conjunto_teste, conjunto_validacao = entrada_dados.monta_conjunto_dados('./Arquivos/X.txt')
+rotulo_treino, rotulo_teste, rotulo_validacao = entrada_dados.monta_rotulo('./Arquivos/Y_letra.txt')
 
 model = Sequential()
 
