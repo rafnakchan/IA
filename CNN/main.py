@@ -13,7 +13,7 @@ from neuronio import Neuronio
 np.set_printoptions(threshold=np.inf)
 
 # remodelando os dados que ficaram em 1 dimensao para uma matriz
-conjunto = entrada_dados.monta_conjunto_dados('X.txt')
+conjunto = entrada_dados.monta_conjunto_dados('./Arquivos/X.txt')
 
 conjunto_treino, resto = train_test_split(conjunto, train_size=1066, random_state=42, shuffle=False)
 
