@@ -13,11 +13,11 @@ rotulo_treino, rotulo_teste, rotulo_validacao = entrada_dados.monta_rotulo('./Ar
 # configuracoes
 epocas: int = 20
 tamanho_amostra_validacao: int = np.size(conjunto_validacao, axis=0)
-neuronios_primeira_camada = 60
-neuronios_segunda_camada = 30
-tamanho_kernel = 3
-formato_imagem = (np.size(conjunto_treino, axis=1), np.size(conjunto_treino, axis=2), 1)
-neuronios_camada_saida = np.size(rotulo_treino, axis=1)
+neuronios_primeira_camada: int = 60
+neuronios_segunda_camada: int = 30
+tamanho_kernel: int = 3
+formato_imagem: tuple[int, int, int] = (np.size(conjunto_treino, axis=1), np.size(conjunto_treino, axis=2), 1)
+neuronios_camada_saida: int = np.size(rotulo_treino, axis=1)
 
 # montagem do modelo
 model = Sequential()
