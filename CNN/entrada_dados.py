@@ -4,13 +4,8 @@ import numpy as np
 def monta_conjunto_dados(arquivo: str):
     with open(arquivo, 'r') as arq:
         dados = arq.read()
-        dados_organizados = dados.replace(' ', '').replace('-1', '0')
+        dados_organizados = dados.replace(' ', '')
 
-    rotulo = [None] * 1326
-    for i in range(0, 1326):
-        rotulo[i] = np.remainder(i, 26)
+    amostra_aux = np.fromstring(dados_organizados, sep=',')
 
-    rotulo = np.reshape(rotulo, (1326, 1))
-    amostraAux = np.fromstring(dados_organizados, sep=',')
-
-    return np.hstack((np.reshape(amostraAux, (1326, 120)), rotulo))
+    return np.reshape(amostra_aux, (1326, 10, 12))
