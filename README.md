@@ -9,3 +9,7 @@
 | Henrique Venchiarutti | 12543694   |
 | Mateus da Silva       | 13672731   |
 | Rafael Nakamura       | 10723986   |
+
+## imports
+- **executar comando para baixar os imports** <br/>
+    - pip install -r requirements.txt
