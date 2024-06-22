@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.model_selection import train_test_split
 from keras.api.models import Sequential
 from keras.api.layers import Dense, Conv2D, Flatten
 import entrada_dados
