@@ -1,5 +1,18 @@
 import numpy as np
 from sklearn.model_selection import train_test_split
+from keras.api.datasets import mnist
+from keras.api.utils import to_categorical
+
+
+def monta_conjunto_dados_mnist() -> (np.ndarray, np.ndarray, np.ndarray):
+    (conjunto_treino, rotulo_treino), (conjunto_aux, rotulo_aux) = mnist.load_data()
+    rotulo_treino = to_categorical(rotulo_treino)
+    rotulo_aux = to_categorical(rotulo_aux)
+
+    conjunto_teste, conjunto_validacao = train_test_split(conjunto_aux, test_size=0.1, random_state=42, shuffle=False)
+    rotulo_teste, rotulo_validacao = train_test_split(rotulo_aux, test_size=0.1, random_state=42, shuffle=False)
+
+    return conjunto_treino, rotulo_treino, conjunto_teste, rotulo_teste, conjunto_validacao, rotulo_validacao
 
 
 def monta_conjunto_dados(arquivo: str) -> (np.ndarray, np.ndarray, np.ndarray):
@@ -31,7 +44,6 @@ def monta_rotulo(arquivo: str) -> (np.ndarray, np.ndarray, np.ndarray):
                 rotulo[i][j] = 0.0
 
     rotulo_treino, aux = train_test_split(np.asarray(rotulo), train_size=1066, random_state=42, shuffle=False)
-
     rotulo_teste, rotulo_validacao = train_test_split(aux, test_size=0.5, random_state=42, shuffle=False)
 
     return rotulo_treino, rotulo_teste, rotulo_validacao
@@ -49,7 +61,7 @@ def verifica_resultado(resultado_obtido: np.ndarray, resultado_esperado: np.ndar
     for i in range(0, 26):
         if resultado_esperado[i] == 1:
             letra_esperada = mapeamento_rotulo[i]
-        if resultado_obtido[i] > 0.9:
+        if resultado_obtido[i] >= 0.9:
             if letra_predita == '':
                 letra_predita = mapeamento_rotulo[i]
             else:
@@ -59,3 +71,23 @@ def verifica_resultado(resultado_obtido: np.ndarray, resultado_esperado: np.ndar
         acerto = True
 
     return acerto, letra_esperada, letra_predita
+
+
+def verifica_resultado_mnist(resultado_obtido: np.ndarray, resultado_esperado: np.ndarray) -> (bool, str, str):
+    numero_esperado: str = ''
+    numero_predito: str = ''
+    acerto: bool = False
+
+    for i in range(0, 10):
+        if resultado_esperado[i] == 1:
+            numero_esperado = str(i)
+        if resultado_obtido[i] >= 0.9:
+            if numero_predito == '':
+                numero_predito = str(i)
+            else:
+                numero_predito = 'Mais de uma numero predito'
+
+    if numero_esperado == numero_predito:
+        acerto = True
+
+    return acerto, numero_esperado, numero_predito
