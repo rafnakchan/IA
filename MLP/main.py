@@ -9,7 +9,7 @@ from neuronio import Neuronio
 # importacao dos dados
 ####################################################################
 
-# configuração para imprimir todo o array
+# configuração para imprimir o array completo
 np.set_printoptions(threshold=np.inf)
 
 # remodelando os dados que ficaram em 1 dimensao para uma matriz
