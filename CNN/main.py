@@ -27,6 +27,7 @@ model.fit(conjunto_treino, rotulo_treino, validation_data=(conjunto_teste, rotul
 
 acertos = 0
 for i in range(0, 130):
+    print('********************************************************************')
     resultado = model.predict(conjunto_validacao[i:i + 1])
     acerto, letra_esperada, letra_predita = entrada_dados.verifica_resultado(resultado[0], rotulo_validacao[i])
     print('Acertou: ' + str(acerto))
@@ -38,5 +39,6 @@ for i in range(0, 130):
     # plt.colorbar()
     # plt.show()
 percentual_acertos = acertos / 130
+print('********************************************************************')
 print('Total de acertos validação: ' + str(acertos))
-print('Percentual de acertos validação: ' + str(percentual_acertos))
+print('Percentual de acertos validação: ' + str(percentual_acertos * 100) + ' %')
