@@ -1,3 +1,4 @@
+import numpy as np
 from keras.api.models import Sequential
 from keras.api.layers import Dense, Conv2D, Flatten
 import entrada_dados
@@ -8,21 +9,33 @@ import entrada_dados
 # conjunto de dados mnist
 conjunto_treino, rotulo_treino, conjunto_teste, rotulo_teste, conjunto_validacao, rotulo_validacao = entrada_dados.monta_conjunto_dados_mnist()
 
+# configuracoes
+epocas: int = 5
+tamanho_amostra_validacao: int = np.size(conjunto_validacao, axis=0)
+neuronios_primeira_camada = 64
+neuronios_segunda_camada = 32
+tamanho_kernel = 3
+formato_imagem = (np.size(conjunto_treino, axis=1), np.size(conjunto_treino, axis=2), 1)
+neuronios_camada_saida = np.size(rotulo_treino, axis=1)
+
+# montagem do modelo
 model = Sequential()
 
-model.add(Conv2D(64, kernel_size=3, activation='relu', input_shape=(28, 28, 1)))
-model.add(Conv2D(32, kernel_size=3, activation='relu'))
+model.add(Conv2D(neuronios_primeira_camada, kernel_size=tamanho_kernel, activation='relu', input_shape=formato_imagem))
+model.add(Conv2D(neuronios_segunda_camada, kernel_size=tamanho_kernel, activation='relu'))
 model.add(Flatten())
-model.add(Dense(10, activation='softmax'))
+model.add(Dense(neuronios_camada_saida, activation='softmax'))
 
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
-model.fit(conjunto_treino, rotulo_treino, validation_data=(conjunto_teste, rotulo_teste), epochs=5)
+# treinamento
+model.fit(conjunto_treino, rotulo_treino, validation_data=(conjunto_teste, rotulo_teste), epochs=epocas)
 
+# validacao
 print('********************************************************************')
-resultado = model.predict(conjunto_validacao[:1000])
+resultado = model.predict(conjunto_validacao[:tamanho_amostra_validacao])
 acertos = 0
-for i in range(0, 1000):
+for i in range(0, tamanho_amostra_validacao):
     print('****************************** ' + str(i) + ' ******************************')
     acerto, valor_esperado, valor_predito = entrada_dados.verifica_resultado_mnist(resultado[i], rotulo_validacao[i])
     print('Acertou: ' + str(acerto))
@@ -30,7 +43,7 @@ for i in range(0, 1000):
     print('Esperado: ' + str(valor_esperado))
     if acerto:
         acertos += 1
-percentual_acertos = acertos / 1000
+percentual_acertos = acertos / tamanho_amostra_validacao
 print('********************************************************************')
 print('Total de acertos validação: ' + str(acertos))
 print('Percentual de acertos validação: ' + str(percentual_acertos * 100) + ' %')
