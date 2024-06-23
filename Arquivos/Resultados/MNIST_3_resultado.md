@@ -1,4 +1,4 @@
-# Resultados do Treinamento
+# Resultados do Treinamento - MNIST
 
 ## Total de Acertos:
 - 965
