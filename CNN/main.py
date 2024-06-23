@@ -96,7 +96,8 @@ print('E | ' + str(verdadeiro_positivo).ljust(5) + ' | ' + str(falso_negativo).l
 print('A | ' + str(falso_positivo).ljust(5) + ' | ' + str(verdadeiro_negativo).ljust(5) + ' |')
 print('L |-------|-------|')
 
-matriz_completa = (verdadeiro_positivo, falso_negativo, falso_positivo, verdadeiro_negativo)
+matriz_completa = (verdadeiro_positivo, falso_negativo,
+                   falso_positivo, verdadeiro_negativo)
 
 dados_utilitario.grava_arquivo_pesos(pesos_inicial, str(time) + '_1_pesos_inicial')
 dados_utilitario.grava_arquivo_pesos(pesos_final, str(time) + '_2_pesos_final')
