@@ -66,7 +66,8 @@ verdadeiro_negativo: int = 0
 
 # Verificacao do resultado
 for i in range(0, tamanho_amostra_validacao):
-    print('****************************** ' + str(i + 1) + ' ******************************')
+    numero_amostra = str(i + 1).rjust(4, '0')
+    print('****************************** ' + numero_amostra + ' ******************************')
     acertos[i], (valores_esperados[i], valores_preditos[i]), matriz = (
         resultados.verifica_resultado(resultado[i], rotulo_validacao[i], dados_mnist))
 
