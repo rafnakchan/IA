@@ -1,6 +1,6 @@
 import numpy as np
 from keras.api.models import Sequential
-from keras.api.layers import Dense, Conv2D, Flatten
+from keras.api.layers import Dense, Conv2D, Flatten, MaxPool2D
 import dados_utilitario
 
 # importacao dos dados
@@ -22,6 +22,7 @@ tamanho_amostra_validacao: int = np.size(conjunto_validacao, axis=0)
 neuronios_primeira_camada: int = 64
 neuronios_segunda_camada: int = 32
 tamanho_kernel: int = 3
+tamanho_pooling: int = 2
 formato_imagem: tuple[int, int, int] = (np.size(conjunto_treino, axis=1), np.size(conjunto_treino, axis=2), 1)
 neuronios_camada_saida: int = np.size(rotulo_treino, axis=1)
 
@@ -29,7 +30,9 @@ neuronios_camada_saida: int = np.size(rotulo_treino, axis=1)
 model = Sequential()
 
 model.add(Conv2D(neuronios_primeira_camada, kernel_size=tamanho_kernel, activation='relu', input_shape=formato_imagem))
+model.add(MaxPool2D(pool_size=tamanho_pooling))
 model.add(Conv2D(neuronios_segunda_camada, kernel_size=tamanho_kernel, activation='relu'))
+model.add(MaxPool2D(pool_size=tamanho_pooling))
 model.add(Flatten())
 model.add(Dense(neuronios_camada_saida, activation='softmax'))
 
