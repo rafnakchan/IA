@@ -30,11 +30,15 @@ neuronios_camada_saida: int = np.size(rotulo_treino, axis=1)
 # montagem do modelo
 model = Sequential()
 
+# Camadas de Kernel e Pooling
 model.add(Conv2D(filtros_primeira_camada, kernel_size=tamanho_kernel, activation='relu', input_shape=formato_imagem))
 model.add(MaxPool2D(pool_size=tamanho_pooling))
 model.add(Conv2D(filtros_segunda_camada, kernel_size=tamanho_kernel, activation='relu'))
 model.add(MaxPool2D(pool_size=tamanho_pooling))
+
+# Camada de Flatten
 model.add(Flatten())
+# camada Densa de saída
 model.add(Dense(neuronios_camada_saida, activation='softmax'))
 
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
@@ -58,6 +62,7 @@ falso_positivo: int = 0
 falso_negativo: int = 0
 verdadeiro_negativo: int = 0
 
+# Verificacao do resultado
 for i in range(0, tamanho_amostra_validacao):
     print('****************************** ' + str(i + 1) + ' ******************************')
     acertos[i], (valores_esperados[i], valores_preditos[i]), matriz = (
