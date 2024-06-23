@@ -32,9 +32,11 @@ model = Sequential()
 
 # Camadas de Kernel e Pooling
 model.add(Conv2D(filtros_primeira_camada, kernel_size=tamanho_kernel, activation='relu', input_shape=formato_imagem))
-model.add(MaxPool2D(pool_size=tamanho_pooling))
+if dados_mnist:
+    model.add(MaxPool2D(pool_size=tamanho_pooling))
 model.add(Conv2D(filtros_segunda_camada, kernel_size=tamanho_kernel, activation='relu'))
-model.add(MaxPool2D(pool_size=tamanho_pooling))
+if dados_mnist:
+    model.add(MaxPool2D(pool_size=tamanho_pooling))
 
 # Camada de Flatten
 model.add(Flatten())
