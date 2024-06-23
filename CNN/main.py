@@ -10,7 +10,7 @@ import resultados
 # importacao dos dados
 ####################################################################
 
-# Mudar para False se desejar usar os dados do EP 1 do MLP
+# Mudar para False se desejar usar os dados de caracteres do EP 1 de MLP
 dados_mnist: bool = True
 (conjunto_treino, rotulo_treino), (conjunto_teste, rotulo_teste), (conjunto_validacao, rotulo_validacao) = (
     dados_utilitario.monta_conjunto_dados(dados_mnist))
