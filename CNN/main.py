@@ -11,14 +11,8 @@ import dados_utilitario
 
 # Mudar para False se desejar usar os dados do EP 1 do MLP
 dados_mnist: bool = True
-if dados_mnist:
-    # conjunto de dados mnist
-    conjunto_treino, rotulo_treino, conjunto_teste, rotulo_teste, conjunto_validacao, rotulo_validacao = (
-        dados_utilitario.monta_conjunto_dados_mnist())
-else:
-    # conjunto de dados fornecidos pela Sarajane
-    conjunto_treino, rotulo_treino, conjunto_teste, rotulo_teste, conjunto_validacao, rotulo_validacao = (
-        dados_utilitario.monta_conjunto_dados('./Arquivos/X.txt', './Arquivos/Y_letra.txt'))
+conjunto_treino, rotulo_treino, conjunto_teste, rotulo_teste, conjunto_validacao, rotulo_validacao = (
+    dados_utilitario.monta_conjunto_dados(dados_mnist))
 
 # configuracoes
 time = time.time()
@@ -59,10 +53,7 @@ valores_esperados = ['' for _ in range(tamanho_amostra_validacao)]
 valores_preditos = ['' for _ in range(tamanho_amostra_validacao)]
 for i in range(0, tamanho_amostra_validacao):
     print('****************************** ' + str(i + 1) + ' ******************************')
-    if dados_mnist:
-        acertos[i], valores_esperados[i], valores_preditos[i] = dados_utilitario.verifica_resultado_mnist(resultado[i], rotulo_validacao[i])
-    else:
-        acertos[i], valores_esperados[i], valores_preditos[i] = dados_utilitario.verifica_resultado(resultado[i], rotulo_validacao[i])
+    acertos[i], valores_esperados[i], valores_preditos[i] = dados_utilitario.verifica_resultado(resultado[i], rotulo_validacao[i], dados_mnist)
     print('Acertou: ' + str(acertos[i]))
     print('Predito: ' + str(valores_preditos[i]))
     print('Esperado: ' + str(valores_esperados[i]))
