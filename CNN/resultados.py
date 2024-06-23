@@ -78,5 +78,5 @@ def verifica_resultado_mnist(resultado_obtido: np.ndarray, resultado_esperado: n
     if numero_esperado == numero_predito:
         acerto = True
 
-    matriz = (verdadeiro_positivo, falso_positivo, falso_negativo, verdadeiro_negativo)
-    return acerto, (numero_esperado, numero_predito), matriz
+    matriz_amostra = (verdadeiro_positivo, falso_positivo, falso_negativo, verdadeiro_negativo)
+    return acerto, (numero_esperado, numero_predito), matriz_amostra

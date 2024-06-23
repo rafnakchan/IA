@@ -71,17 +71,17 @@ verdadeiro_negativo: int = 0
 for i in range(0, tamanho_amostra_validacao):
     numero_amostra = str(i + 1).rjust(4, '0')
     print('****************************** ' + numero_amostra + ' ******************************')
-    acertos[i], (valores_esperados[i], valores_preditos[i]), matriz = (
+    acertos[i], (valores_esperados[i], valores_preditos[i]), matriz_amostra = (
         resultados.verifica_resultado(resultado[i], rotulo_validacao[i], dados_mnist))
 
     print('Acertou: ' + str(acertos[i]))
     print('Predito: ' + str(valores_preditos[i]))
     print('Esperado: ' + str(valores_esperados[i]))
 
-    verdadeiro_positivo += matriz[0]
-    falso_positivo += matriz[1]
-    falso_negativo += matriz[2]
-    verdadeiro_negativo += matriz[3]
+    verdadeiro_positivo += matriz_amostra[0]
+    falso_positivo += matriz_amostra[1]
+    falso_negativo += matriz_amostra[2]
+    verdadeiro_negativo += matriz_amostra[3]
     if acertos[i]:
         numero_acertos += 1
 
@@ -95,8 +95,9 @@ print('R |-------|-------|')
 print('E | ' + str(verdadeiro_positivo).ljust(5) + ' | ' + str(falso_negativo).ljust(5) + ' |')
 print('A | ' + str(falso_positivo).ljust(5) + ' | ' + str(verdadeiro_negativo).ljust(5) + ' |')
 print('L |-------|-------|')
-matriz_confusao = (verdadeiro_positivo, falso_negativo, falso_positivo, verdadeiro_negativo)
+
+matriz_completa = (verdadeiro_positivo, falso_negativo, falso_positivo, verdadeiro_negativo)
 
 dados_utilitario.grava_arquivo_pesos(pesos_inicial, str(time) + '_1_pesos_inicial')
 dados_utilitario.grava_arquivo_pesos(pesos_final, str(time) + '_2_pesos_final')
-dados_utilitario.grava_arquivo_resultado(acertos, valores_preditos, valores_esperados, numero_acertos, percentual_acertos, matriz_confusao, str(time) + '_3_resultado', tamanho_amostra_validacao)
+dados_utilitario.grava_arquivo_resultado(acertos, valores_preditos, valores_esperados, numero_acertos, percentual_acertos, matriz_completa, str(time) + '_3_resultado', tamanho_amostra_validacao)
