@@ -87,3 +87,12 @@ def verifica_resultado_mnist(resultado_obtido: np.ndarray, resultado_esperado: n
         acerto = True
 
     return acerto, numero_esperado, numero_predito
+
+
+def grava_arquivo_pesos(pesos: np.ndarray, nome_arquivo: str):
+    # montagem do conjunto de dados
+    with open('./Arquivos/Pesos/' + nome_arquivo + '.txt', 'w') as arq:
+        for registro in pesos:
+            arq.write(np.array2string(registro) + '\n')
+    return
+

@@ -1,4 +1,5 @@
 import numpy as np
+import time
 from keras.api.models import Sequential
 from keras.api.layers import Dense, Conv2D, Flatten, MaxPool2D
 import dados_utilitario
@@ -17,6 +18,7 @@ else:
         dados_utilitario.monta_conjunto_dados('./Arquivos/X.txt', './Arquivos/Y_letra.txt'))
 
 # configuracoes
+np.set_printoptions(threshold=np.inf)
 epocas: int = 5
 tamanho_amostra_validacao: int = np.size(conjunto_validacao, axis=0)
 neuronios_primeira_camada: int = 64
@@ -39,7 +41,9 @@ model.add(Dense(neuronios_camada_saida, activation='softmax'))
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
 # treinamento
+pesos_inicial = model.get_weights()
 model.fit(conjunto_treino, rotulo_treino, validation_data=(conjunto_teste, rotulo_teste), epochs=epocas)
+pesos_final = model.get_weights()
 
 # validacao
 print('**********************************************************************')
@@ -60,3 +64,7 @@ percentual_acertos = acertos / tamanho_amostra_validacao
 print('**********************************************************************')
 print('Total de acertos validação: ' + str(acertos))
 print('Percentual de acertos validação: ' + str(percentual_acertos * 100) + ' %')
+
+time = time.time()
+dados_utilitario.grava_arquivo_pesos(pesos_inicial,  str(time) + '_1_pesos_inicial')
+dados_utilitario.grava_arquivo_pesos(pesos_final,  str(time) + '_2_pesos_final')
