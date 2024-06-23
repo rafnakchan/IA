@@ -12,7 +12,7 @@ import resultados
 
 print('Deseja utilizar dados do dataset MNIST?: ')
 inp = input().lower()
-dados_mnist: bool = (inp == 'yes') | (inp == 'sim') | (inp == 'y') | (inp == 's') | (inp == 'true')
+dados_mnist: bool = (inp == 'yes') | (inp == 'sim') | (inp == 'y') | (inp == 's') | (inp == 'true') | (inp == '')
 (conjunto_treino, rotulo_treino), (conjunto_teste, rotulo_teste), (conjunto_validacao, rotulo_validacao) = (
     dados_utilitario.monta_conjunto_dados(dados_mnist))
 
