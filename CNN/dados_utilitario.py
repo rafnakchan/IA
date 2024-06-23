@@ -12,6 +12,8 @@ def monta_conjunto_dados(dados_mnist: bool):
 
 
 def monta_conjunto_dados_mnist():
+
+    # Modelagem dos dados de entrada
     (conjunto_treino, rotulo_treino), (conjunto_aux, rotulo_aux) = mnist.load_data()
     rotulo_treino = to_categorical(rotulo_treino)
     rotulo_aux = to_categorical(rotulo_aux)
