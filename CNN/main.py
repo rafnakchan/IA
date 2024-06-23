@@ -6,7 +6,7 @@ import dados_utilitario
 # importacao dos dados
 ####################################################################
 
-dados_mnist: bool = False
+dados_mnist: bool = True
 if dados_mnist:
     # conjunto de dados mnist
     conjunto_treino, rotulo_treino, conjunto_teste, rotulo_teste, conjunto_validacao, rotulo_validacao = (
