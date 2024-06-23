@@ -9,6 +9,7 @@ import dados_utilitario
 # importacao dos dados
 ####################################################################
 
+# Mudar para False se desejar usar os dados do EP 1 do MLP
 dados_mnist: bool = True
 if dados_mnist:
     # conjunto de dados mnist
@@ -51,6 +52,7 @@ pesos_final = model.get_weights()
 # validacao
 print('**********************************************************************')
 resultado = model.predict(conjunto_validacao[:tamanho_amostra_validacao])
+
 numero_acertos = 0
 acertos = [False for _ in range(tamanho_amostra_validacao)]
 valores_esperados = ['' for _ in range(tamanho_amostra_validacao)]
@@ -58,17 +60,15 @@ valores_preditos = ['' for _ in range(tamanho_amostra_validacao)]
 for i in range(0, tamanho_amostra_validacao):
     print('****************************** ' + str(i + 1) + ' ******************************')
     if dados_mnist:
-        acertos[i], valores_esperados[i], valores_preditos[i] = dados_utilitario.verifica_resultado_mnist(resultado[i],
-                                                                                                          rotulo_validacao[
-                                                                                                              i])
+        acertos[i], valores_esperados[i], valores_preditos[i] = dados_utilitario.verifica_resultado_mnist(resultado[i], rotulo_validacao[i])
     else:
-        acertos[i], valores_esperados[i], valores_preditos[i] = dados_utilitario.verifica_resultado(resultado[i],
-                                                                                                    rotulo_validacao[i])
+        acertos[i], valores_esperados[i], valores_preditos[i] = dados_utilitario.verifica_resultado(resultado[i], rotulo_validacao[i])
     print('Acertou: ' + str(acertos[i]))
     print('Predito: ' + str(valores_preditos[i]))
     print('Esperado: ' + str(valores_esperados[i]))
     if acertos[i]:
         numero_acertos += 1
+
 percentual_acertos = numero_acertos / tamanho_amostra_validacao
 print('**********************************************************************')
 print('Total de acertos validação: ' + str(numero_acertos))
@@ -76,5 +76,4 @@ print('Percentual de acertos validação: ' + str(percentual_acertos * 100) + ' 
 
 dados_utilitario.grava_arquivo_pesos(pesos_inicial, str(time) + '_1_pesos_inicial')
 dados_utilitario.grava_arquivo_pesos(pesos_final, str(time) + '_2_pesos_final')
-dados_utilitario.grava_arquivo_resultado(acertos, valores_preditos, valores_esperados, str(time) + '_3_resultado',
-                                         tamanho_amostra_validacao)
+dados_utilitario.grava_arquivo_resultado(acertos, valores_preditos, valores_esperados, str(time) + '_3_resultado', tamanho_amostra_validacao)
