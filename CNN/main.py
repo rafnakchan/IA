@@ -7,8 +7,8 @@ import entrada_dados
 ####################################################################
 
 # conjunto de dados fornecidos pela Sarajane
-conjunto_treino, conjunto_teste, conjunto_validacao = entrada_dados.monta_conjunto_dados('./Arquivos/X.txt')
-rotulo_treino, rotulo_teste, rotulo_validacao = entrada_dados.monta_rotulo('./Arquivos/Y_letra.txt')
+conjunto_treino, rotulo_treino, conjunto_teste, rotulo_teste, conjunto_validacao, rotulo_validacao = (
+    entrada_dados.monta_conjunto_dados('./Arquivos/X.txt', './Arquivos/Y_letra.txt'))
 
 # configuracoes
 epocas: int = 20

@@ -4,7 +4,7 @@ from keras.api.datasets import mnist
 from keras.api.utils import to_categorical
 
 
-def monta_conjunto_dados_mnist() -> (np.ndarray, np.ndarray, np.ndarray):
+def monta_conjunto_dados_mnist():
     (conjunto_treino, rotulo_treino), (conjunto_aux, rotulo_aux) = mnist.load_data()
     rotulo_treino = to_categorical(rotulo_treino)
     rotulo_aux = to_categorical(rotulo_aux)
@@ -15,22 +15,18 @@ def monta_conjunto_dados_mnist() -> (np.ndarray, np.ndarray, np.ndarray):
     return conjunto_treino, rotulo_treino, conjunto_teste, rotulo_teste, conjunto_validacao, rotulo_validacao
 
 
-def monta_conjunto_dados(arquivo: str) -> (np.ndarray, np.ndarray, np.ndarray):
-    with open(arquivo, 'r') as arq:
+def monta_conjunto_dados(arquivo_dados: str, arquivo_rotulo: str):
+    # montagem do conjunto de dados
+    with open(arquivo_dados, 'r') as arq:
         dados = arq.read()
         dados_organizados = dados.replace(' ', '')
 
-    aux = np.fromstring(dados_organizados, sep=',')
+    conjunto_aux = np.fromstring(dados_organizados, sep=',')
+    conjunto_treino, conjunto_aux = train_test_split(np.reshape(conjunto_aux, (1326, 10, 12)), train_size=1066, random_state=42, shuffle=False)
+    conjunto_teste, conjunto_validacao = train_test_split(conjunto_aux, test_size=0.5, random_state=42, shuffle=False)
 
-    conjunto_treino, aux = train_test_split(np.reshape(aux, (1326, 10, 12)), train_size=1066, random_state=42, shuffle=False)
-    conjunto_teste, conjunto_validacao = train_test_split(aux, test_size=0.5, random_state=42, shuffle=False)
-
-    return conjunto_treino, conjunto_teste, conjunto_validacao
-
-
-def monta_rotulo(arquivo: str) -> (np.ndarray, np.ndarray, np.ndarray):
-    entrada_rotulo = np.loadtxt(arquivo, dtype=str)
-
+    # montagem do rotulo
+    entrada_rotulo = np.loadtxt(arquivo_rotulo, dtype=str)
     mapeamento_rotulo = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9,
                          'K': 10, 'L': 11, 'M': 12, 'N': 13, 'O': 14, 'P': 15, 'Q': 16, 'R': 17, 'S': 18,
                          'T': 19, 'U': 20, 'V': 21, 'W': 22, 'X': 23, 'Y': 24, 'Z': 25}
@@ -43,10 +39,10 @@ def monta_rotulo(arquivo: str) -> (np.ndarray, np.ndarray, np.ndarray):
             else:
                 rotulo[i][j] = 0.0
 
-    rotulo_treino, aux = train_test_split(np.asarray(rotulo), train_size=1066, random_state=42, shuffle=False)
-    rotulo_teste, rotulo_validacao = train_test_split(aux, test_size=0.5, random_state=42, shuffle=False)
+    rotulo_treino, rotulo_aux = train_test_split(np.asarray(rotulo), train_size=1066, random_state=42, shuffle=False)
+    rotulo_teste, rotulo_validacao = train_test_split(rotulo_aux, test_size=0.5, random_state=42, shuffle=False)
 
-    return rotulo_treino, rotulo_teste, rotulo_validacao
+    return conjunto_treino, rotulo_treino, conjunto_teste, rotulo_teste, conjunto_validacao, rotulo_validacao
 
 
 def verifica_resultado(resultado_obtido: np.ndarray, resultado_esperado: np.ndarray) -> (bool, str, str):

@@ -7,7 +7,8 @@ import entrada_dados
 ####################################################################
 
 # conjunto de dados mnist
-conjunto_treino, rotulo_treino, conjunto_teste, rotulo_teste, conjunto_validacao, rotulo_validacao = entrada_dados.monta_conjunto_dados_mnist()
+conjunto_treino, rotulo_treino, conjunto_teste, rotulo_teste, conjunto_validacao, rotulo_validacao = (
+    entrada_dados.monta_conjunto_dados_mnist())
 
 # configuracoes
 epocas: int = 5
