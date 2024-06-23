@@ -19,7 +19,9 @@ dados_mnist: bool = (inp == 'yes') | (inp == 'sim') | (inp == 'y') | (inp == 's'
 # configuracoes
 time = time.time()
 np.set_printoptions(threshold=np.inf)
-epocas: int = 5
+epocas: int = 20
+if dados_mnist:
+    epocas = 5
 tamanho_amostra_validacao: int = np.size(conjunto_validacao, axis=0)
 filtros_primeira_camada: int = 64
 filtros_segunda_camada: int = 32
