@@ -19,7 +19,7 @@ def monta_conjunto_dados_mnist():
     conjunto_teste, conjunto_validacao = train_test_split(conjunto_aux, test_size=0.1, random_state=42, shuffle=False)
     rotulo_teste, rotulo_validacao = train_test_split(rotulo_aux, test_size=0.1, random_state=42, shuffle=False)
 
-    return conjunto_treino, rotulo_treino, conjunto_teste, rotulo_teste, conjunto_validacao, rotulo_validacao
+    return (conjunto_treino, rotulo_treino), (conjunto_teste, rotulo_teste), (conjunto_validacao, rotulo_validacao)
 
 
 def monta_conjunto_dados_ep1():
@@ -50,58 +50,7 @@ def monta_conjunto_dados_ep1():
     rotulo_treino, rotulo_aux = train_test_split(np.asarray(rotulo), train_size=1066, random_state=42, shuffle=False)
     rotulo_teste, rotulo_validacao = train_test_split(rotulo_aux, test_size=0.5, random_state=42, shuffle=False)
 
-    return conjunto_treino, rotulo_treino, conjunto_teste, rotulo_teste, conjunto_validacao, rotulo_validacao
-
-
-def verifica_resultado(resultado_obtido: np.ndarray, resultado_esperado: np.ndarray, dados_mnist: bool) -> (bool, str, str):
-    if dados_mnist:
-        return verifica_resultado_mnist(resultado_obtido, resultado_esperado)
-    else:
-        return verifica_resultado_ep1(resultado_obtido, resultado_esperado)
-
-
-def verifica_resultado_ep1(resultado_obtido: np.ndarray, resultado_esperado: np.ndarray) -> (bool, str, str):
-    mapeamento_rotulo = {0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'F', 6: 'G', 7: 'H', 8: 'I', 9: 'J',
-                         10: 'K', 11: 'L', 12: 'M', 13: 'N', 14: 'O', 15: 'P', 16: 'Q', 17: 'R', 18: 'S',
-                         19: 'T', 20: 'U', 21: 'V', 22: 'W', 23: 'X', 24: 'Y', 25: 'Z'}
-
-    letra_esperada: str = ''
-    letra_predita: str = ''
-    acerto: bool = False
-
-    for i in range(0, 26):
-        if resultado_esperado[i] == 1:
-            letra_esperada = mapeamento_rotulo[i]
-        if resultado_obtido[i] >= 0.9:
-            if letra_predita == '':
-                letra_predita = mapeamento_rotulo[i]
-            else:
-                letra_predita = 'Mais de uma letra predita'
-
-    if letra_esperada == letra_predita:
-        acerto = True
-
-    return acerto, letra_esperada, letra_predita
-
-
-def verifica_resultado_mnist(resultado_obtido: np.ndarray, resultado_esperado: np.ndarray) -> (bool, str, str):
-    numero_esperado: str = ''
-    numero_predito: str = ''
-    acerto: bool = False
-
-    for i in range(0, 10):
-        if resultado_esperado[i] == 1:
-            numero_esperado = str(i)
-        if resultado_obtido[i] >= 0.9:
-            if numero_predito == '':
-                numero_predito = str(i)
-            else:
-                numero_predito = 'Mais de um numero predito'
-
-    if numero_esperado == numero_predito:
-        acerto = True
-
-    return acerto, numero_esperado, numero_predito
+    return (conjunto_treino, rotulo_treino), (conjunto_teste, rotulo_teste), (conjunto_validacao, rotulo_validacao)
 
 
 def grava_arquivo_pesos(pesos: np.ndarray, nome_arquivo: str):
@@ -112,9 +61,20 @@ def grava_arquivo_pesos(pesos: np.ndarray, nome_arquivo: str):
     return
 
 
-def grava_arquivo_resultado(acerto: list[bool], valor_predito: list[str], valor_esperado: list[str], nome_arquivo: str, linhas: int):
+def grava_arquivo_resultado(acerto: list[bool], valor_predito: list[str], valor_esperado: list[str], total_acertos, percentual_acertos, matriz: tuple, nome_arquivo, linhas):
     # montagem do conjunto de dados
     with open('./Arquivos/Resultados/' + nome_arquivo + '.md', 'w') as arq:
+        arq.write('# Resultados do Treinamento\n\n')
+        arq.write('## Total de Acertos:\n')
+        arq.write('- ' + str(total_acertos) + '\n\n')
+        arq.write('## Percentual de Acertos:\n')
+        arq.write('- ' + str(percentual_acertos) + ' %\n\n')
+        arq.write('## Matriz de Confusao:\n')
+        arq.write('|        | Predito 1 | Predito 0 |\n')
+        arq.write('|--------|-----------|-----------|\n')
+        arq.write('| Real 1 | ' + str(matriz[0]).ljust(9) + ' | ' + str(matriz[1]).ljust(9) + ' |\n')
+        arq.write('| Real 0 | ' + str(matriz[2]).ljust(9) + ' | ' + str(matriz[3]).ljust(9) + ' |\n\n')
+        arq.write('## Tabela de Acertos:\n')
         arq.write('| Valor Predito | Valor Esperado | Acerto |\n')
         arq.write('|---------------|----------------|--------|\n')
         for i in range(0, linhas):

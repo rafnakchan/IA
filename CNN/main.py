@@ -5,13 +5,14 @@ from keras.api.layers import Dense, Conv2D, Flatten, MaxPool2D
 from keras.api.models import Sequential
 
 import dados_utilitario
+import resultados
 
 # importacao dos dados
 ####################################################################
 
 # Mudar para False se desejar usar os dados do EP 1 do MLP
 dados_mnist: bool = True
-conjunto_treino, rotulo_treino, conjunto_teste, rotulo_teste, conjunto_validacao, rotulo_validacao = (
+(conjunto_treino, rotulo_treino), (conjunto_teste, rotulo_teste), (conjunto_validacao, rotulo_validacao) = (
     dados_utilitario.monta_conjunto_dados(dados_mnist))
 
 # configuracoes
@@ -51,20 +52,40 @@ numero_acertos = 0
 acertos = [False for _ in range(tamanho_amostra_validacao)]
 valores_esperados = ['' for _ in range(tamanho_amostra_validacao)]
 valores_preditos = ['' for _ in range(tamanho_amostra_validacao)]
+
+verdadeiro_positivo: int = 0
+falso_positivo: int = 0
+falso_negativo: int = 0
+verdadeiro_negativo: int = 0
+
 for i in range(0, tamanho_amostra_validacao):
     print('****************************** ' + str(i + 1) + ' ******************************')
-    acertos[i], valores_esperados[i], valores_preditos[i] = dados_utilitario.verifica_resultado(resultado[i], rotulo_validacao[i], dados_mnist)
+    acertos[i], (valores_esperados[i], valores_preditos[i]), matriz = (
+        resultados.verifica_resultado(resultado[i], rotulo_validacao[i], dados_mnist))
+
     print('Acertou: ' + str(acertos[i]))
     print('Predito: ' + str(valores_preditos[i]))
     print('Esperado: ' + str(valores_esperados[i]))
+
+    verdadeiro_positivo += matriz[0]
+    falso_positivo += matriz[1]
+    falso_negativo += matriz[2]
+    verdadeiro_negativo += matriz[3]
     if acertos[i]:
         numero_acertos += 1
 
-percentual_acertos = numero_acertos / tamanho_amostra_validacao
+percentual_acertos = (numero_acertos / tamanho_amostra_validacao) * 100
 print('**********************************************************************')
 print('Total de acertos validação: ' + str(numero_acertos))
-print('Percentual de acertos validação: ' + str(percentual_acertos * 100) + ' %')
+print('Percentual de acertos validação: ' + str(percentual_acertos) + ' %')
+print('')
+print('       PREDITO     ')
+print('R |-------|-------|')
+print('E | ' + str(verdadeiro_positivo).ljust(5) + ' | ' + str(falso_negativo).ljust(5) + ' |')
+print('A | ' + str(falso_positivo).ljust(5) + ' | ' + str(verdadeiro_negativo).ljust(5) + ' |')
+print('L |-------|-------|')
+matriz_confusao = (verdadeiro_positivo, falso_negativo, falso_positivo, verdadeiro_negativo)
 
 dados_utilitario.grava_arquivo_pesos(pesos_inicial, str(time) + '_1_pesos_inicial')
 dados_utilitario.grava_arquivo_pesos(pesos_final, str(time) + '_2_pesos_final')
-dados_utilitario.grava_arquivo_resultado(acertos, valores_preditos, valores_esperados, str(time) + '_3_resultado', tamanho_amostra_validacao)
+dados_utilitario.grava_arquivo_resultado(acertos, valores_preditos, valores_esperados, numero_acertos, percentual_acertos, matriz_confusao, str(time) + '_3_resultado', tamanho_amostra_validacao)
