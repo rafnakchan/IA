@@ -10,7 +10,6 @@ import resultados
 # importacao dos dados
 ####################################################################
 
-# Mudar para False se desejar usar os dados de caracteres do EP 1 de MLP
 print('Deseja utilizar dados do dataset MNIST?: ')
 inp = input().lower()
 dados_mnist: bool = (inp == 'yes') | (inp == 'sim') | (inp == 'y') | (inp == 's') | (inp == 'true')
