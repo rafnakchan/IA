@@ -1,7 +1,9 @@
-import numpy as np
 import time
-from keras.api.models import Sequential
+
+import numpy as np
 from keras.api.layers import Dense, Conv2D, Flatten, MaxPool2D
+from keras.api.models import Sequential
+
 import dados_utilitario
 
 # importacao dos dados
@@ -18,6 +20,7 @@ else:
         dados_utilitario.monta_conjunto_dados('./Arquivos/X.txt', './Arquivos/Y_letra.txt'))
 
 # configuracoes
+time = time.time()
 np.set_printoptions(threshold=np.inf)
 epocas: int = 5
 tamanho_amostra_validacao: int = np.size(conjunto_validacao, axis=0)
@@ -48,23 +51,30 @@ pesos_final = model.get_weights()
 # validacao
 print('**********************************************************************')
 resultado = model.predict(conjunto_validacao[:tamanho_amostra_validacao])
-acertos = 0
+numero_acertos = 0
+acertos = [False for _ in range(tamanho_amostra_validacao)]
+valores_esperados = ['' for _ in range(tamanho_amostra_validacao)]
+valores_preditos = ['' for _ in range(tamanho_amostra_validacao)]
 for i in range(0, tamanho_amostra_validacao):
     print('****************************** ' + str(i + 1) + ' ******************************')
     if dados_mnist:
-        acerto, valor_esperado, valor_predito = dados_utilitario.verifica_resultado_mnist(resultado[i], rotulo_validacao[i])
+        acertos[i], valores_esperados[i], valores_preditos[i] = dados_utilitario.verifica_resultado_mnist(resultado[i],
+                                                                                                          rotulo_validacao[
+                                                                                                              i])
     else:
-        acerto, valor_esperado, valor_predito = dados_utilitario.verifica_resultado(resultado[i], rotulo_validacao[i])
-    print('Acertou: ' + str(acerto))
-    print('Predito: ' + str(valor_predito))
-    print('Esperado: ' + str(valor_esperado))
-    if acerto:
-        acertos += 1
-percentual_acertos = acertos / tamanho_amostra_validacao
+        acertos[i], valores_esperados[i], valores_preditos[i] = dados_utilitario.verifica_resultado(resultado[i],
+                                                                                                    rotulo_validacao[i])
+    print('Acertou: ' + str(acertos[i]))
+    print('Predito: ' + str(valores_preditos[i]))
+    print('Esperado: ' + str(valores_esperados[i]))
+    if acertos[i]:
+        numero_acertos += 1
+percentual_acertos = numero_acertos / tamanho_amostra_validacao
 print('**********************************************************************')
-print('Total de acertos validação: ' + str(acertos))
+print('Total de acertos validação: ' + str(numero_acertos))
 print('Percentual de acertos validação: ' + str(percentual_acertos * 100) + ' %')
 
-time = time.time()
-dados_utilitario.grava_arquivo_pesos(pesos_inicial,  str(time) + '_1_pesos_inicial')
-dados_utilitario.grava_arquivo_pesos(pesos_final,  str(time) + '_2_pesos_final')
+dados_utilitario.grava_arquivo_pesos(pesos_inicial, str(time) + '_1_pesos_inicial')
+dados_utilitario.grava_arquivo_pesos(pesos_final, str(time) + '_2_pesos_final')
+dados_utilitario.grava_arquivo_resultado(acertos, valores_preditos, valores_esperados, str(time) + '_3_resultado',
+                                         tamanho_amostra_validacao)

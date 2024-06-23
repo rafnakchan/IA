@@ -22,7 +22,8 @@ def monta_conjunto_dados(arquivo_dados: str, arquivo_rotulo: str):
         dados_organizados = dados.replace(' ', '')
 
     conjunto_aux = np.fromstring(dados_organizados, sep=',')
-    conjunto_treino, conjunto_aux = train_test_split(np.reshape(conjunto_aux, (1326, 10, 12)), train_size=1066, random_state=42, shuffle=False)
+    conjunto_treino, conjunto_aux = train_test_split(np.reshape(conjunto_aux, (1326, 10, 12)), train_size=1066,
+                                                     random_state=42, shuffle=False)
     conjunto_teste, conjunto_validacao = train_test_split(conjunto_aux, test_size=0.5, random_state=42, shuffle=False)
 
     # montagem do rotulo
@@ -71,17 +72,17 @@ def verifica_resultado(resultado_obtido: np.ndarray, resultado_esperado: np.ndar
 
 def verifica_resultado_mnist(resultado_obtido: np.ndarray, resultado_esperado: np.ndarray) -> (bool, str, str):
     numero_esperado: str = ''
-    numero_predito: str = ''
+    numero_predito: str = 'X'
     acerto: bool = False
 
     for i in range(0, 10):
         if resultado_esperado[i] == 1:
             numero_esperado = str(i)
         if resultado_obtido[i] >= 0.9:
-            if numero_predito == '':
+            if numero_predito == 'X':
                 numero_predito = str(i)
             else:
-                numero_predito = 'Mais de uma numero predito'
+                numero_predito = 'Mais de um numero predito'
 
     if numero_esperado == numero_predito:
         acerto = True
@@ -91,8 +92,17 @@ def verifica_resultado_mnist(resultado_obtido: np.ndarray, resultado_esperado: n
 
 def grava_arquivo_pesos(pesos: np.ndarray, nome_arquivo: str):
     # montagem do conjunto de dados
-    with open('./Arquivos/Pesos/' + nome_arquivo + '.txt', 'w') as arq:
+    with open('./Arquivos/Resultados/' + nome_arquivo + '.txt', 'w') as arq:
         for registro in pesos:
             arq.write(np.array2string(registro) + '\n')
     return
 
+
+def grava_arquivo_resultado(acerto: list[bool], valor_predito: list[str], valor_esperado: list[str], nome_arquivo: str, linhas: int):
+    # montagem do conjunto de dados
+    with open('./Arquivos/Resultados/' + nome_arquivo + '.md', 'w') as arq:
+        arq.write('| Valor Predito | Valor Esperado | Acerto |\n')
+        arq.write('|---------------|----------------|--------|\n')
+        for i in range(0, linhas):
+            arq.write('| ' + valor_predito[i] + ' | ' + valor_esperado[i] + ' | ' + str(acerto[i]).ljust(5) + ' |\n')
+    return
