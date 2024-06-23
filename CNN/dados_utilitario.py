@@ -14,6 +14,7 @@ def monta_conjunto_dados(dados_mnist: bool):
 def monta_conjunto_dados_mnist():
 
     # Modelagem dos dados de entrada
+    print('Carregando dados do Dataset MNIST')
     (conjunto_treino, rotulo_treino), (conjunto_aux, rotulo_aux) = mnist.load_data()
     rotulo_treino = to_categorical(rotulo_treino)
     rotulo_aux = to_categorical(rotulo_aux)
@@ -26,6 +27,7 @@ def monta_conjunto_dados_mnist():
 
 def monta_conjunto_dados_ep1():
     # montagem do conjunto de dados
+    print('Carregando dados de Caracteres')
     with open('./Arquivos/X.txt', 'r') as arq:
         dados = arq.read()
         dados_organizados = dados.replace(' ', '')
@@ -56,7 +58,7 @@ def monta_conjunto_dados_ep1():
 
 
 def grava_arquivo_pesos(pesos: np.ndarray, nome_arquivo: str):
-    # montagem do conjunto de dados
+    # gravacao do arquivo de pesos
     with open('./Arquivos/Resultados/' + nome_arquivo + '.txt', 'w') as arq:
         for registro in pesos:
             arq.write(np.array2string(registro) + '\n')
@@ -64,7 +66,7 @@ def grava_arquivo_pesos(pesos: np.ndarray, nome_arquivo: str):
 
 
 def grava_arquivo_resultado(acerto: list[bool], valor_predito: list[str], valor_esperado: list[str], total_acertos, percentual_acertos, matriz: tuple, nome_arquivo, linhas):
-    # montagem do conjunto de dados
+    # gravacao do arquivo de resultados
     with open('./Arquivos/Resultados/' + nome_arquivo + '.md', 'w') as arq:
         arq.write('# Resultados do Treinamento\n\n')
         arq.write('## Total de Acertos:\n')
